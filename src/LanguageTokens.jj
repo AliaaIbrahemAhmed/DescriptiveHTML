@@ -1,0 +1,27 @@
+PARSER_BEGIN(LanguageTokens)
+
+public class LanguageTokens {
+
+  /** Main entry point. */
+  public static void main(String args[]) throws ParseException {
+    LanguageTokens parser = new LanguageTokens(System.in);
+    parser.Input();
+  }
+
+}
+
+PARSER_END(LanguageTokens)
+
+TOKEN : {<Number : (["0"-"9"])+>}
+TOKEN : {<SmallLetter : (["a"-"z"])+>}
+TOKEN : {<CapitalLetter : (["A"-"Z"])+>}
+TOKEN : {<Slash : ("/")+>}
+TOKEN : {<Dott : (".")+>}
+TOKEN : {<Colon : (":")+>}
+SKIP : {"\n"|"\t"|"\r"|""|" "}
+
+void Input() :
+{}
+{
+  ( <Number> | <Slash> | <SmallLetter>| <CapitalLetter> |<Dott> | <Colon> )+ <EOF>
+}

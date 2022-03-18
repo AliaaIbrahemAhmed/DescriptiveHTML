@@ -9,17 +9,41 @@ public interface LanguageTokensConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int Number = 1;
+  int create = 1;
   /** RegularExpression Id. */
-  int SmallLetter = 2;
+  int img = 2;
   /** RegularExpression Id. */
-  int CapitalLetter = 3;
+  int header = 3;
   /** RegularExpression Id. */
-  int Slash = 4;
+  int para = 4;
   /** RegularExpression Id. */
-  int Dott = 5;
+  int url = 5;
   /** RegularExpression Id. */
-  int Colon = 6;
+  int text = 6;
+  /** RegularExpression Id. */
+  int color = 7;
+  /** RegularExpression Id. */
+  int font = 8;
+  /** RegularExpression Id. */
+  int link = 9;
+  /** RegularExpression Id. */
+  int quote = 10;
+  /** RegularExpression Id. */
+  int AND = 11;
+  /** RegularExpression Id. */
+  int Number = 15;
+  /** RegularExpression Id. */
+  int SmallLetter = 16;
+  /** RegularExpression Id. */
+  int CapitalLetter = 17;
+  /** RegularExpression Id. */
+  int Slash = 18;
+  /** RegularExpression Id. */
+  int Dott = 19;
+  /** RegularExpression Id. */
+  int Colon = 20;
+  /** RegularExpression Id. */
+  int UnderScore = 21;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -27,17 +51,28 @@ public interface LanguageTokensConstants {
   /** Literal token values. */
   String[] tokenImage = {
     "<EOF>",
+    "\"ADD\"",
+    "\" IMAGE WITH SOURCE\"",
+    "\" HEADING\"",
+    "\" PARAGRAPH\"",
+    "\" LINK\"",
+    "\" WITH TEXT\"",
+    "\" WITH COLOR\"",
+    "\" WITH FONT\"",
+    "\" WITH LINK\"",
+    "\"\\\"\"",
+    "\"AND\"",
+    "\"\\t\"",
+    "\"\\r\"",
+    "\" \"",
     "<Number>",
     "<SmallLetter>",
     "<CapitalLetter>",
-    "<Slash>",
-    "<Dott>",
-    "<Colon>",
+    "\"/\"",
+    "\".\"",
+    "\":\"",
+    "\"_\"",
     "\"\\n\"",
-    "\"\\t\"",
-    "\"\\r\"",
-    "\"\"",
-    "\" \"",
   };
 
 }

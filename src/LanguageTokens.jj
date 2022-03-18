@@ -1,27 +1,139 @@
 PARSER_BEGIN(LanguageTokens)
+import java.io.StringReader;
+import java.util.Vector;
 
 public class LanguageTokens {
-
+    static Vector<Element> inputs;
   /** Main entry point. */
-  public static void main(String args[]) throws ParseException {
-    LanguageTokens parser = new LanguageTokens(System.in);
-    parser.Input();
-  }
-
+  public static void main(String args[]) throws ParseException {/*
+      */
+        LanguageTokens.inputs = new Vector<>();
+     StringReader in=new StringReader("ADD IMAGE WITH SOURCE \"https://www.w3schools.com/html/pic_trulli.jpg\"\n"+
+                                       "ADD LINK WITH TEXT \"Email\" AND WITH LINK \"http://gmail.com\" AND WITH COLOR \"Green\"\n"+
+                                     "ADD HEADING WITH TEXT \"Hello World\" AND WITH FONT \"Arial\" AND WITH COLOR \"Red\"\n"+
+                                      "ADD HEADING WITH TEXT \"Hello World\"\n"+
+                                     "ADD HEADING WITH TEXT \"Hello World\"\n"+
+                                     "ADD PARAGRAPH WITH TEXT \"Welcome\" AND WITH FONT \"Arial\" AND WITH COLOR \"Red\"\n"+
+                                      "ADD LINK WITH TEXT \"Search\" AND WITH LINK \"http://google.com\"\n"+
+                                      "ADD LINK WITH TEXT \"Email\" AND WITH LINK \"http://gmail.com\" AND WITH COLOR \"Green\"\n"+
+                                     "ADD PARAGRAPH WITH FONT \"Arial\" AND WITH TEXT \"Good bye\"");
+        LanguageTokens parser=new LanguageTokens(in);
+        HTML_Parser html_parser = new HTML_Parser();
+        parser.Input();
+        System.out.println(html_parser.html(inputs));
 }
+    }
+
 
 PARSER_END(LanguageTokens)
 
-TOKEN : {<Number : (["0"-"9"])+>}
-TOKEN : {<SmallLetter : (["a"-"z"])+>}
-TOKEN : {<CapitalLetter : (["A"-"Z"])+>}
-TOKEN : {<Slash : ("/")+>}
-TOKEN : {<Dott : (".")+>}
-TOKEN : {<Colon : (":")+>}
-SKIP : {"\n"|"\t"|"\r"|""|" "}
+TOKEN: { < create:("ADD") > }
+TOKEN: { < img:(" IMAGE WITH SOURCE") > }
+TOKEN: { < header:(" HEADING") > }
+TOKEN: { < para:(" PARAGRAPH") > }
+TOKEN: { < url:(" LINK") > }
+TOKEN: { < text:(" WITH TEXT") > }
+TOKEN: { < color:(" WITH COLOR") > }
+TOKEN: { < font:(" WITH FONT") > }
+TOKEN: { < link:(" WITH LINK") > }
+TOKEN: { < quote:("\"") > }
+TOKEN : {<AND : "AND">}
+SKIP : {"\t"|"\r"|" "}
+TOKEN : {<Number : (["0"-"9"])>}
+TOKEN : {<SmallLetter : (["a"-"z"])>}
+TOKEN : {<CapitalLetter : (["A"-"Z"])>}
+TOKEN : {<Slash : ("/")>}
+TOKEN : {<Dott : (".")>}
+TOKEN : {<Colon : (":")>}
+TOKEN : {<UnderScore : ("_")>}
 
-void Input() :
-{}
+boolean Input() :
 {
-  ( <Number> | <Slash> | <SmallLetter>| <CapitalLetter> |<Dott> | <Colon> )+ <EOF>
+ Element element = new Element();
+ String txt;
+ }
+{
+try{
+  <create>
+  (<img>{element.setType("image");} txt = FullSentence() {element.setText(txt);}
+  |<header>{element.setType("header");} Decorated_txt(element)
+  |<para>{element.setType("paragraph");} Decorated_txt(element)
+  |<url>{element.setType("link");} Decorated_url(element))
+  ("\n" (Input() | <EOF>) | <EOF>)
+  {
+    System.out.println("TRUE");
+    LanguageTokens.inputs.add(element);
+    return true;
+} }catch(Exception e){
+    System.out.println("FALSE");
+    System.out.println(element.getType()+" color: "+element.getColor()+" font: "+element.getFont()+" text "+element.getText()+" url: "+element.getUrl());
+
+    return false;
+}
+}
+
+String FullSentence() :
+{String sentence;}
+{
+<quote>(sentence = AlphaNumeric())+<quote>
+{return sentence;}
+}
+String AlphaNumeric():
+{String sentence = "";
+String temp;
+Token a;}
+{
+ ( (a = <SmallLetter>{sentence+=a.image;})+
+ | (a = <CapitalLetter>{sentence+=a.image;})+
+ | (a = <Slash>{sentence+=a.image;})+
+ | (a = <Dott>{sentence+=a.image;})+
+ | (a = <Colon>{sentence+=a.image;})+
+ | (a = <Number>{sentence+=a.image;})+
+ | (a = <UnderScore>{sentence+=a.image;})+) (temp = AlphaNumeric(){sentence+=temp;})*
+ {return sentence;}
+}
+void Decorated_txt(Element element):
+{int type;
+ String txt;}
+{
+(<text> {type = 0;} |<color> {type = 1;} | <font> {type = 2;})+ txt = FullSentence() {
+    switch (type){
+        case 0:
+            element.setText(txt);
+            break;
+        case 1:
+            element.setColor(txt);
+            break;
+        case 2:
+            element.setFont(txt);
+            break;
+        default:
+            break;
+    }
+} (<AND> Decorated_txt(element))*
+}
+void Decorated_url(Element element):
+{int type;
+String txt;}
+{
+ (<link> {type = 0;}  | <text>{type = 1;} |<color>{type = 2;} | <font>{type = 3;} )+ txt = FullSentence(){
+    switch (type){
+        case 0:
+            element.setUrl(txt);
+            break;
+        case 1:
+            element.setText(txt);
+            break;
+        case 2:
+            element.setColor(txt);
+            break;
+        case 3:
+            element.setFont(txt);
+            break;
+        default:
+            break;
+            }
+}
+(<AND> Decorated_url(element))*
+
 }
